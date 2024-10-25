@@ -270,16 +270,21 @@ input::placeholder {
 
     // Function to register a new user
     function registerUser(email, password) {
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        if (users.some(user => user.email === email)) {
-            alert('Account with this email already exists!');
-            return false;
-        }
-        // Adding new user with an initial balance of 5 Turd Tokens
-        users.push({ email, password, tokens: 5 }); 
-        localStorage.setItem('users', JSON.stringify(users));
-        alert('Registration successful!');
-        return true;
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    if (users.some(user => user.email === email)) {
+        alert('Account with this email already exists!');
+        return false;
+    }
+    users.push({
+        email,
+        password,
+        tokens: 5,  // Initial token balance
+        logs: [],  // Empty array for logs
+        stats: {}  // Empty object for statistics
+    });
+    localStorage.setItem('users', JSON.stringify(users));
+    alert('Registration successful!');
+    return true;
     }
 
     // Event listener for the registration form submission
@@ -305,14 +310,13 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     const email = document.querySelector('#login input[type="email"]').value;
     const password = document.querySelector('#login input[type="password"]').value;
 
-    // Retrieve users from localStorage
     const users = JSON.parse(localStorage.getItem('users')) || [];
     const user = users.find(user => user.email === email && user.password === password);
 
     if (user) {
         localStorage.setItem('currentUser', JSON.stringify(user)); // Save current user session
-        alert('Login successful!'); // Confirm successful login
-        window.location.href = '/main.html'; // Redirect to the main page
+        alert('Login successful!');
+        window.location.href = '/main.html'; // Redirect to main page; adjust if main page path is different
     } else {
         alert('Invalid email or password. Please try again.');
     }
