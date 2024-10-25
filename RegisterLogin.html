@@ -199,85 +199,124 @@ input::placeholder {
         </div>
     </div>
 
-    <a href="https://poopprofit.com/contact" class="contact-link">Get in Touch</a>
-
+    <a href="mailto:poopprofit@gmail.com" class="contact-link">Get in Touch</a>
     <script>
-        function fadeIn(elementId) {
-            const element = document.getElementById(elementId);
-            element.style.visibility = 'visible';
-            requestAnimationFrame(() => {
-                element.style.opacity = 1;
-            });
-        }
-
-        function fadeOut(elementId) {
-            const element = document.getElementById(elementId);
-            element.style.opacity = 0;
-            setTimeout(() => {
-                element.style.visibility = 'hidden';
-            }, 1000);
-        }
-
-        function showOptions() {
-            fadeOut('intro');
-            fadeOut('registration');
-            fadeOut('login');
-            setTimeout(() => {
-                fadeIn('options');
-            }, 1000);
-        }
-
-        function showRegistration() {
-            fadeOut('options');
-            setTimeout(() => {
-                fadeIn('registration');
-                document.getElementById('background').style.opacity = 1;
-            }, 1000);
-        }
-
-        function showLogin() {
-            fadeOut('options');
-            setTimeout(() => {
-                fadeIn('login');
-                document.getElementById('background').style.opacity = 1;
-            }, 1000);
-        }
-
-        const lensFlareContainer = document.querySelector('.lens-flare-container');
-        function createLensFlare() {
-            const flare = document.createElement('div');
-            flare.className = 'lens-flare';
-            flare.style.left = Math.random() * window.innerWidth + 'px';
-            flare.style.top = Math.random() * window.innerHeight + 'px';
-            flare.style.animationDelay = Math.random() * 12 + 's';
-            lensFlareContainer.appendChild(flare);
-
-            flare.addEventListener('animationend', () => {
-                flare.remove();
-            });
-        }
-
-        // Start lens flares immediately
-        createLensFlare();
-        createLensFlare();
-        // Create new lens flares less frequently
-        setInterval(createLensFlare, 3000);
-
-        window.onload = function() {
-            setTimeout(() => {
-                fadeIn('intro');
-            }, 1000);
-        };
-
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Registration successful! (This is a demo)');
+    function fadeIn(elementId) {
+        const element = document.getElementById(elementId);
+        element.style.visibility = 'visible';
+        requestAnimationFrame(() => {
+            element.style.opacity = 1;
         });
+    }
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Login successful! (This is a demo)');
+    function fadeOut(elementId) {
+        const element = document.getElementById(elementId);
+        element.style.opacity = 0;
+        setTimeout(() => {
+            element.style.visibility = 'hidden';
+        }, 1000);
+    }
+
+    function showOptions() {
+        fadeOut('intro');
+        fadeOut('registration');
+        fadeOut('login');
+        setTimeout(() => {
+            fadeIn('options');
+        }, 1000);
+    }
+
+    function showRegistration() {
+        fadeOut('options');
+        setTimeout(() => {
+            fadeIn('registration');
+            document.getElementById('background').style.opacity = 1;
+        }, 1000);
+    }
+
+    function showLogin() {
+        fadeOut('options');
+        setTimeout(() => {
+            fadeIn('login');
+            document.getElementById('background').style.opacity = 1;
+        }, 1000);
+    }
+
+    const lensFlareContainer = document.querySelector('.lens-flare-container');
+    function createLensFlare() {
+        const flare = document.createElement('div');
+        flare.className = 'lens-flare';
+        flare.style.left = Math.random() * window.innerWidth + 'px';
+        flare.style.top = Math.random() * window.innerHeight + 'px';
+        flare.style.animationDelay = Math.random() * 12 + 's';
+        lensFlareContainer.appendChild(flare);
+
+        flare.addEventListener('animationend', () => {
+            flare.remove();
         });
+    }
+
+    // Start lens flares immediately
+    createLensFlare();
+    createLensFlare();
+    // Create new lens flares less frequently
+    setInterval(createLensFlare, 3000);
+
+    window.onload = function() {
+        setTimeout(() => {
+            fadeIn('intro');
+        }, 1000);
+    };
+
+    // Function to register a new user
+    function registerUser(email, password) {
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        if (users.some(user => user.email === email)) {
+            alert('Account with this email already exists!');
+            return false;
+        }
+        // Adding new user with an initial balance of 5 Turd Tokens
+        users.push({ email, password, tokens: 5 }); 
+        localStorage.setItem('users', JSON.stringify(users));
+        alert('Registration successful!');
+        return true;
+    }
+
+    // Event listener for the registration form submission
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.querySelector('#registration input[type="email"]').value;
+        const password = document.querySelector('#registration input[type="password"]').value;
+        const confirmPassword = document.querySelector('#registration input[type="password"]:nth-of-type(2)').value;
+
+        if (password !== confirmPassword) {
+            alert('Passwords do not match. Please try again.');
+            return;
+        }
+
+        if (registerUser(email, password)) {
+            showLogin(); // Transition to login after successful registration
+        }
+    });
+
+    // Event listener for the login form submission
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.querySelector('#login input[type="email"]').value;
+        const password = document.querySelector('#login input[type="password"]').value;
+
+        // Retrieve users from localStorage
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(user => user.email === email && user.password === password);
+
+        if (user) {
+            localStorage.setItem('currentUser', JSON.stringify(user)); // Save current user session
+            alert('Login successful!'); // Confirm successful login
+            // Here you could redirect to the main page or display logged-in content
+        } else {
+            alert('Invalid email or password. Please try again.');
+        }
+    });
     </script>
 </body>
 </html>
