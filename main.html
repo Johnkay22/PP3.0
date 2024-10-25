@@ -963,25 +963,33 @@ function filterStatsByDateRange(startDate, endDate) {
 }
 
 function saveToLocalStorage() {
-    localStorage.setItem('stats', JSON.stringify(stats));
-    localStorage.setItem('turdTokens', turdTokens.toString());
-    localStorage.setItem('poopLog', poopLog.innerHTML);
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    let userIndex = users.findIndex(u => u.email === currentUser.email);
+
+    if (userIndex !== -1) {
+        users[userIndex].tokens = turdTokens; // Update Turd Tokens
+        users[userIndex].logs = document.getElementById('poopLog').innerHTML; // Save poop logs
+        users[userIndex].stats = stats; // Save stats
+
+        localStorage.setItem('users', JSON.stringify(users)); // Update all users in storage
+    }
 }
 
 function loadFromLocalStorage() {
-    // Load stats
-    const savedStats = localStorage.getItem('stats');
-    if (savedStats) {
-        const parsedStats = JSON.parse(savedStats);
-        // Convert date strings back to Date objects
-        if (parsedStats.firstSessionDate) {
-            parsedStats.firstSessionDate = new Date(parsedStats.firstSessionDate);
-        }
-        if (parsedStats.lastSessionDate) {
-            parsedStats.lastSessionDate = new Date(parsedStats.lastSessionDate);
-        }
-        Object.assign(stats, parsedStats);
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    let user = users.find(u => u.email === currentUser.email);
+
+    if (user) {
+        turdTokens = user.tokens;
+        document.getElementById('poopLog').innerHTML = user.logs;
+        stats = user.stats;
+
+        updateTurdTokenDisplay();
+        displayStatistics();
     }
+}
 
     // Load turd tokens
     const savedTokens = localStorage.getItem('turdTokens');
@@ -1237,6 +1245,14 @@ Track your bathroom breaks at www.poopprofit.com!`;
 </script>
 </head>
 <body>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) {
+        window.location.href = 'RegisterLogin (2).html'; // Redirect to login page if no user is logged in
+    }
+});
+</script>    
 <div class="app-container">
     <header>
         <img src="/a/702fa063-850c-4841-81f6-abec165648cb" alt="Poop Profit Header" class="header-image">
