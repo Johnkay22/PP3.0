@@ -217,46 +217,76 @@ button:hover {
     </div>
 
     <script>
-        function getUserData() {
+// Data management functions
+function getUserData() {
     return JSON.parse(localStorage.getItem('users')) || [];
 }
 
 function saveUserData(users) {
     localStorage.setItem('users', JSON.stringify(users));
 }
-        const lensFlareContainer = document.getElementById('lens-flare-container');
-        const registerBox = document.getElementById('registerBox');
-        const signInBox = document.getElementById('signInBox');
 
-        function createLensFlare() {
-            const flare = document.createElement('div');
-            flare.className = 'lens-flare';
-            flare.style.left = Math.random() * window.innerWidth + 'px';
-            flare.style.top = Math.random() * window.innerHeight + 'px';
-            flare.style.animationDelay = Math.random() * 12 + 's';
-            lensFlareContainer.appendChild(flare);
+// Registration function
+function registerUser(username, email, password) {
+    const users = getUserData();
+    if (users.some(user => user.username === username)) {
+        alert('Username already exists!');
+        return;
+    }
+    const newUser = {
+        id: Date.now(), // Unique ID for the user
+        username,
+        email,
+        password,
+        tokens: 100 // Initial tokens balance
+    };
+    users.push(newUser);
+    saveUserData(users);
+    alert('Registration successful!');
+    showSignIn(); // Switch to the sign-in form
+}
 
-            flare.addEventListener('animationend', () => {
-                flare.remove();
-            });
-        }
+// Event listener for registration button
+document.getElementById('registerButton').addEventListener('click', function() {
+    const username = document.querySelector('#registerBox input[type="text"]').value;
+    const email = document.querySelector('#registerBox input[type="email"]').value;
+    const password = document.querySelector('#registerBox input[type="password"]').value;
+    registerUser(username, email, password);
+});
 
-        // Create initial lens flares
-        createLensFlare();
-        createLensFlare();
-        
-        // Create new lens flares periodically
-        setInterval(createLensFlare, 6000);
+// Lens flare effects
+const lensFlareContainer = document.getElementById('lens-flare-container');
 
-        function showRegister() {
-            signInBox.classList.remove('active');
-            registerBox.classList.add('active');
-        }
+function createLensFlare() {
+    const flare = document.createElement('div');
+    flare.className = 'lens-flare';
+    flare.style.left = Math.random() * window.innerWidth + 'px';
+    flare.style.top = Math.random() * window.innerHeight + 'px';
+    flare.style.animationDelay = Math.random() * 12 + 's';
+    lensFlareContainer.appendChild(flare);
 
-        function showSignIn() {
-            registerBox.classList.remove('active');
-            signInBox.classList.add('active');
-        }
+    flare.addEventListener('animationend', () => {
+        flare.remove();
+    });
+}
+
+// Create initial lens flares
+createLensFlare();
+createLensFlare();
+
+// Periodically create new lens flares
+setInterval(createLensFlare, 6000);
+
+// Functions to toggle between registration and login views
+function showRegister() {
+    signInBox.classList.remove('active');
+    registerBox.classList.add('active');
+}
+
+function showSignIn() {
+    registerBox.classList.remove('active');
+    signInBox.classList.add('active');
+}
     </script>
 </body>
 </html>
