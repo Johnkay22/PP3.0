@@ -268,58 +268,42 @@ input::placeholder {
         }, 1000);
     };
 
-    // Function to register a new user
-    function registerUser(email, password) {
+    // Function to register and log in a new user
+function registerUser(email, password) {
     let users = JSON.parse(localStorage.getItem('users')) || [];
     if (users.some(user => user.email === email)) {
         alert('Account with this email already exists!');
         return false;
     }
-    users.push({
+    let newUser = {
         email,
         password,
         tokens: 5,  // Initial token balance
         logs: [],  // Empty array for logs
         stats: {}  // Empty object for statistics
-    });
+    };
+    users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
-    alert('Registration successful!');
+    // Log in the user immediately after registration
+    localStorage.setItem('currentUser', JSON.stringify(newUser)); 
+    alert('Registration successful! Logging you in...');
+    window.location.href = '/main.html'; // Redirect to main page; adjust if main page path is different
     return true;
-    }
+}
 
-    // Event listener for the registration form submission
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.querySelector('#registration input[type="email"]').value;
-        const password = document.querySelector('#registration input[type="password"]').value;
-        const confirmPassword = document.querySelector('#registration input[type="password"]:nth-of-type(2)').value;
-
-        if (password !== confirmPassword) {
-            alert('Passwords do not match. Please try again.');
-            return;
-        }
-
-        if (registerUser(email, password)) {
-            showLogin(); // Transition to login after successful registration
-        }
-    });
-
-    // Event listener for the login form submission
-document.getElementById('loginForm').addEventListener('submit', function(e) {
+// Event listener for the registration form submission
+document.getElementById('registerForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    const email = document.querySelector('#login input[type="email"]').value;
-    const password = document.querySelector('#login input[type="password"]').value;
+    const email = document.querySelector('#registration input[type="email"]').value;
+    const password = document.querySelector('#registration input[type="password"]').value;
+    const confirmPassword = document.querySelector('#registration input[type="password"]:nth-of-type(2)').value;
 
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(user => user.email === email && user.password === password);
-
-    if (user) {
-        localStorage.setItem('currentUser', JSON.stringify(user)); // Save current user session
-        alert('Login successful!');
-        window.location.href = '/main.html'; // Redirect to main page; adjust if main page path is different
-    } else {
-        alert('Invalid email or password. Please try again.');
+    if (password !== confirmPassword) {
+        alert('Passwords do not match. Please try again.');
+        return;
     }
+
+    registerUser(email, password); // This will also handle login and redirection
 });
     </script>
 </body>
