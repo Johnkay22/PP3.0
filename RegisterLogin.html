@@ -300,23 +300,23 @@ input::placeholder {
     });
 
     // Event listener for the login form submission
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.querySelector('#login input[type="email"]').value;
-        const password = document.querySelector('#login input[type="password"]').value;
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.querySelector('#login input[type="email"]').value;
+    const password = document.querySelector('#login input[type="password"]').value;
 
-        // Retrieve users from localStorage
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(user => user.email === email && user.password === password);
+    // Retrieve users from localStorage
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(user => user.email === email && user.password === password);
 
-        if (user) {
-            localStorage.setItem('currentUser', JSON.stringify(user)); // Save current user session
-            alert('Login successful!'); // Confirm successful login
-            // Here you could redirect to the main page or display logged-in content
-        } else {
-            alert('Invalid email or password. Please try again.');
-        }
-    });
+    if (user) {
+        localStorage.setItem('currentUser', JSON.stringify(user)); // Save current user session
+        alert('Login successful!'); // Confirm successful login
+        window.location.href = '/main.html'; // Redirect to the main page
+    } else {
+        alert('Invalid email or password. Please try again.');
+    }
+});
     </script>
 </body>
 </html>
