@@ -190,7 +190,7 @@ button:hover {
                 <label>Confirm Password</label>
                 <input type="password" required>
             </div>
-            <button>Register</button>
+            <button id="registerButton">Register</button>
             <div class="switch-form">
                 <a onclick="showSignIn()">Already have an account? Sign in</a>
             </div>
@@ -205,7 +205,7 @@ button:hover {
                 <label>Password</label>
                 <input type="password" required>
             </div>
-            <button>Sign In</button>
+            <button id="loginButton">Sign In</button>
             <div class="switch-form">
                 <a onclick="showRegister()">Don't have an account? Register</a>
             </div>
@@ -217,6 +217,13 @@ button:hover {
     </div>
 
     <script>
+        function getUserData() {
+    return JSON.parse(localStorage.getItem('users')) || [];
+}
+
+function saveUserData(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+}
         const lensFlareContainer = document.getElementById('lens-flare-container');
         const registerBox = document.getElementById('registerBox');
         const signInBox = document.getElementById('signInBox');
